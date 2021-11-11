@@ -1,11 +1,13 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, request
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import InputRequired, Email, Length
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Thisisasecret'
@@ -15,6 +17,20 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+
+#For uploading of Time table file
+path = os.getcwd()
+UPLOAD_FOLDER = os.path.join(path, 'uploads')
+#Make a directory if uploads does not exist
+if not os.path.isdir(UPLOAD_FOLDER):
+    os.mkdir(UPLOAD_FOLDER)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+#Allowed extensions for the upload of time table.
+ALLOWED_EXTENSIONS = set(['txt', 'csv', 'xlsx'])
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -90,5 +106,19 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        if 'files[]' not in request.files:
+            return redirect(request.url)
+        files = request.files.getlist('files[]')
+        for file in files:
+            if file in files:
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    
+        return render_template('index.html')
+    return render_template('upload.html')
 if __name__ == '__main__':
     app.run(debug=True)

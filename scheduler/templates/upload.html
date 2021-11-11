@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Demo app</title>
+    <!-- <link rel="stylesheet" href="{{url_for('static', filename='css/template.css') }}"> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  </head>
+  <body>
+      <button class="btn btn-dark btn-lg" style="position: absolute;top:40%;left:49%;" onclick="myFunction()">Get started</button>
+      <div id="fileupload" style="font-family:Pacifico; display:none">
+        <h2 style="background-color:yellow; position: absolute;top:50%;left:45%;">Select file(s) to upload</h2>
+        <p style="position: absolute;top:55%;left:45%;">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class=flashes>
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+            {% endwith %}
+        </p>
+        <form style="color:blue" method="post" action="/" enctype="multipart/form-data">
+            <dl>
+                <p style="position: absolute;top:60%;left:45%">
+                    <input class="btn btn-primary" type="file" name="files[]" multiple="true" autocomplete="off" required>
+                </p>
+            </dl>
+            <p style="position: absolute; top:70%; left:52%">
+                <input class="btn btn-primary" type="submit" value="Submit">
+            </p>
+        </form>
+
+      </div>
+      
+      <script>
+          function myFunction() {
+              if(document.getElementById("fileupload").style.display == "none"){
+                document.getElementById("fileupload").style.display = "block";
+              }else{
+                  document.getElementById("fileupload").style.display = "none";
+              }
+          }
+      </script>
+  </body>
+</html>
