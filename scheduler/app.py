@@ -8,10 +8,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import os
+from excelToJSON import converter
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Thisisasecret'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 Bootstrap(app)
 db = SQLAlchemy(app)
 login_manager = LoginManager()
@@ -25,7 +27,9 @@ UPLOAD_FOLDER = os.path.join(path, 'uploads')
 #Make a directory if uploads does not exist
 if not os.path.isdir(UPLOAD_FOLDER):
     os.mkdir(UPLOAD_FOLDER)
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 #Allowed extensions for the upload of time table.
 ALLOWED_EXTENSIONS = set(['txt', 'csv', 'xlsx'])
 
@@ -60,9 +64,26 @@ class RegisterForm(FlaskForm):
     groupNumber = StringField('Group Number (e.g: 1, 2, 3)', validators=[InputRequired(), Length(min=1, max=3)])
     isVaccinated = BooleanField('Are you vaccinated?')
 
-@app.route('/')
+#Remove GET and POST methods from this route
+@app.route('/', methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        if 'files[]' not in request.files:
+            return redirect(request.url)
+        files = request.files.getlist('files[]')
+        for file in files:
+            if file in files:
+                if file and allowed_file(file.filename):
+                    # filename = secure_filename(file.filename)
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'TimeTable.xlsx'))
+        
+        converter(UPLOAD_FOLDER + '/TimeTable.xlsx')
+        return render_template('/index.html')
+    return render_template('/upload.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -106,19 +127,5 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
-@app.route('/upload', methods=['GET', 'POST'])
-def upload_file():
-    if request.method == 'POST':
-        if 'files[]' not in request.files:
-            return redirect(request.url)
-        files = request.files.getlist('files[]')
-        for file in files:
-            if file in files:
-                if file and allowed_file(file.filename):
-                    filename = secure_filename(file.filename)
-                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    
-        return render_template('index.html')
-    return render_template('upload.html')
 if __name__ == '__main__':
     app.run(debug=True)

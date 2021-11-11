@@ -24,10 +24,10 @@
             {% endif %}
             {% endwith %}
         </p>
-        <form style="color:blue" method="post" action="/" enctype="multipart/form-data">
+        <form style="color:blue" method="post" action="/upload" enctype="multipart/form-data">
             <dl>
                 <p style="position: absolute;top:60%;left:45%">
-                    <input class="btn btn-primary" type="file" name="files[]" multiple="true" autocomplete="off" required>
+                    <input class="btn btn-primary" type="file" name="files[]" multiple="false" autocomplete="off" required>
                 </p>
             </dl>
             <p style="position: absolute; top:70%; left:52%">
