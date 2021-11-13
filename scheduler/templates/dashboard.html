@@ -10,7 +10,7 @@ Dashboard
 {% endblock %}
 
 {% block content %}
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+<nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -34,8 +34,31 @@ Dashboard
         </div>
       </div>
     </nav>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8" />
+    <title>House</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+      integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+      crossorigin="anonymous"
+    />
+    
+  </head>
+  <body>
+    <div class="container"></div>
+    <p>
+      Hi, {{name}}
+      
+    </p>
+    <p>{{timeTable}}</p>
+  </body>
+</html>    
 
-    <div class="container-fluid">
+    <!--<div class="container-fluid">
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
@@ -213,5 +236,5 @@ Dashboard
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 {% endblock %}

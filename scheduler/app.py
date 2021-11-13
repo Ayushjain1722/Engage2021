@@ -1,13 +1,15 @@
 from flask import Flask, render_template, redirect, url_for, request
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField
+from wtforms import StringField, PasswordField, BooleanField, IntegerField
 from wtforms.validators import InputRequired, Email, Length
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import os
+import json
+from datetime import datetime
 from excelToJSON import converter
 
 app = Flask(__name__)
@@ -44,6 +46,8 @@ class User(UserMixin, db.Model):
     rollNumber = db.Column(db.String(10), unique=True)
     branch = db.Column(db.String(10))
     groupNumber = db.Column(db.String(3))
+    degree = db.Column(db.String(5))
+    year = db.Column(db.String(4))
     isVaccinated = db.Column(db.Boolean)
 
 @login_manager.user_loader
@@ -62,6 +66,8 @@ class RegisterForm(FlaskForm):
     rollNumber = StringField('Roll Number', validators=[InputRequired(), Length(min=9, max=10)])
     branch = StringField('Branch (e.g: COE, BT, ECE)', validators=[InputRequired(), Length(min=2, max=6)])
     groupNumber = StringField('Group Number (e.g: 1, 2, 3)', validators=[InputRequired(), Length(min=1, max=3)])
+    degree = StringField('Degree (e.g: ug, pg)', validators=[InputRequired(), Length(min=2, max=5)])
+    year = IntegerField('Year (e.g: 1, 2, 3, 4)', validators=[InputRequired()])
     isVaccinated = BooleanField('Are you vaccinated?')
 
 #Remove GET and POST methods from this route
@@ -109,6 +115,8 @@ def signup():
                         rollNumber=form.rollNumber.data,
                         branch=form.branch.data,
                         groupNumber=form.groupNumber.data,
+                        degree=form.degree.data,
+                        year=form.year.data,
                         isVaccinated=form.isVaccinated.data)
         db.session.add(new_user)
         db.session.commit()
@@ -119,7 +127,39 @@ def signup():
 @app.route('/dashboard')
 @login_required
 def dashboard():   
-    return render_template('dashboard.html', name=current_user.username)
+    with open('./TimeTableDB.json') as f:
+        data = json.load(f)
+    timeTable = []
+    #Getting the time table data from the json file for this user's batch number
+    for entry in data:
+        # Check if the degree and year matches..
+        if current_user.degree == entry['degree'] and current_user.year == entry['year']:
+            for batch in entry['time_table_data']:
+                #Check if batch number and branch matches
+                print("This entry:", batch['batchNumber'], " ", batch['branch'])
+                if current_user.branch == batch['branch'] and current_user.groupNumber == batch['batchNumber']:
+                    #Now according to the day, showcase the time table..
+                    dayNumber = datetime.today().weekday() + 2
+                    print(dayNumber)
+                    #Need to show the next day's time-table, so showcase that
+                    if dayNumber == 1:
+                        timeTable = batch['timeTable']['monday']
+                    elif dayNumber == 2:
+                        timeTable = batch['timeTable']['tuesday']
+                    elif dayNumber == 3:
+                        timeTable = batch['timeTable']['wednesday']
+                    elif dayNumber == 4:
+                        timeTable = batch['timeTable']['thursday']
+                    elif dayNumber == 5:
+                        timeTable = batch['timeTable']['friday']
+                    elif dayNumber == 6:
+                        timeTable = batch['timeTable']['saturday']
+                    else:
+                        # timeTable = batch['timeTable']['monday']
+                        timeTable.append("Enjoy your holiday!")
+
+    print(timeTable)
+    return render_template('dashboard.html', name=current_user.username, timeTable=timeTable)
 
 @app.route('/logout')
 @login_required
