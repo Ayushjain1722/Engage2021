@@ -155,10 +155,10 @@ def dashboard():
                     elif dayNumber == 6:
                         timeTable = batch['timeTable']['saturday']
                     else:
-                        # timeTable = batch['timeTable']['monday']
-                        timeTable.append("Enjoy your holiday!")
+                        timeTable = batch['timeTable']['monday']
+                        # timeTable.append("Enjoy your holiday!")
 
-    print(timeTable)
+    print(timeTable, type(timeTable))
     return render_template('dashboard.html', name=current_user.username, timeTable=timeTable)
 
 @app.route('/logout')
