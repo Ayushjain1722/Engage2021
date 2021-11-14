@@ -14,7 +14,16 @@ from excelToJSON import converter
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Thisisasecret'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+#Database for login and registration
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user.db'
+#Database for physical classes preferences for the students
+app.config['SQLALCHEMY_BINDS'] = {
+    'offline': 'sqlite:///physicalClasses.db',
+    'filled': 'sqlite:///filled.db'
+}
+#Database with student's username/email who have filled their preferences..
+
+#Specifying the maxium upload size of the time-table file
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 Bootstrap(app)
 db = SQLAlchemy(app)
@@ -38,6 +47,7 @@ ALLOWED_EXTENSIONS = set(['txt', 'csv', 'xlsx'])
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+#Class for user database
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(15), unique=True)
@@ -49,6 +59,21 @@ class User(UserMixin, db.Model):
     degree = db.Column(db.String(5))
     year = db.Column(db.String(4))
     isVaccinated = db.Column(db.Boolean)
+
+#Class for the physical classes database
+class PhysicalClass(db.Model):
+    __bind_key__ = 'offline'
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(50))
+    teacherEmail = db.Column(db.String(50))
+    classCode = db.Column(db.String(10))
+    className = db.Column(db.String(30))
+    timeSlot = db.Column(db.String(3))
+
+#Class for student's who have filled their preferences
+class Filled(db.Model):
+    __bind_key__ = 'filled'
+    email = db.Column(db.String(50), primary_key=True)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -124,9 +149,9 @@ def signup():
         return '<h1> New User has been created..! </h1>'
     return render_template('signup.html', form=form)
 
-@app.route('/dashboard')
+@app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
-def dashboard():   
+def dashboard():  
     with open('./TimeTableDB.json') as f:
         data = json.load(f)
     timeTable = []
@@ -136,16 +161,14 @@ def dashboard():
         if current_user.degree == entry['degree'] and current_user.year == entry['year']:
             for batch in entry['time_table_data']:
                 #Check if batch number and branch matches
-                print("This entry:", batch['batchNumber'], " ", batch['branch'])
                 if current_user.branch == batch['branch'] and current_user.groupNumber == batch['batchNumber']:
                     #Now according to the day, showcase the time table..
                     dayNumber = datetime.today().weekday() + 2
-                    print(dayNumber)
                     #Need to show the next day's time-table, so showcase that
                     if dayNumber == 1:
                         timeTable = batch['timeTable']['monday']
                     elif dayNumber == 2:
-                        timeTable = batch['timeTable']['tuesday']
+                        timeTable = batch['timeTable']['monday']
                     elif dayNumber == 3:
                         timeTable = batch['timeTable']['wednesday']
                     elif dayNumber == 4:
@@ -155,11 +178,34 @@ def dashboard():
                     elif dayNumber == 6:
                         timeTable = batch['timeTable']['saturday']
                     else:
-                        timeTable = batch['timeTable']['monday']
-                        # timeTable.append("Enjoy your holiday!")
-
-    print(timeTable, type(timeTable))
-    return render_template('dashboard.html', name=current_user.username, timeTable=timeTable)
+                        # timeTable = batch['timeTable']['monday']
+                        timeTable.append("Enjoy your holiday!")
+    alreadyFilled = Filled.query.filter_by(email=current_user.email).first() is not None 
+    if alreadyFilled:
+        return render_template('dashboard.html', name=current_user.username, timeTable=timeTable, alreadyFilled="true")
+    #If the student fills the preferences
+    if request.method == "POST":
+        preferences = request.form.getlist('preference[]')
+        #See if student wants to attend offline/physical classes, then add his/her info to the database
+        for idx, preference in enumerate(preferences):
+            if preference == 'offline':
+                student_entry = PhysicalClass(
+                    email = current_user.email,
+                    teacherEmail = timeTable[idx]['teacher_email'],
+                    classCode = timeTable[idx]['class_code'],
+                    className = timeTable[idx]['class_name'],
+                    timeSlot = timeTable[idx]['timeSlot']
+                )
+                db.session.add(student_entry)
+                db.session.commit()
+        
+        #Add the student's id to the database
+        filled = Filled(email=current_user.email)
+        db.session.add(filled)
+        db.session.commit()
+        return render_template('dashboard.html', name=current_user.username, timeTable=timeTable, alreadyFilled="true")
+        # return f"<h1>{preferences}</h1><h2>These preferences have been added to the database</h2>"
+    return render_template('dashboard.html', name=current_user.username, timeTable=timeTable, alreadyFilled="false")
 
 @app.route('/logout')
 @login_required
