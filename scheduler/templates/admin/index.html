@@ -1,0 +1,22 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+<style>
+    .button {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        }
+
+    .button2 {background-color: #008CBA;} /* Blue */
+</style>
+  <a class="button" href="{{url_for('upload_file')}}">Upload New/Updated Time-Table</a>
+  <a class="button button2" href="{{ url_for('logout') }}">Log Out</a>
+{% endblock %}

@@ -7,6 +7,8 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 import os
 import json
 from datetime import datetime
@@ -27,6 +29,7 @@ app.config['SQLALCHEMY_BINDS'] = {
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 Bootstrap(app)
 db = SQLAlchemy(app)
+admin = Admin(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -75,6 +78,11 @@ class Filled(db.Model):
     __bind_key__ = 'filled'
     email = db.Column(db.String(50), primary_key=True)
 
+#class for admin page table views
+class MyModelView(ModelView):
+    def is_accessible(self):
+        return current_user.is_authenticated
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -94,6 +102,11 @@ class RegisterForm(FlaskForm):
     degree = StringField('Degree (e.g: ug, pg)', validators=[InputRequired(), Length(min=2, max=5)])
     year = IntegerField('Year (e.g: 1, 2, 3, 4)', validators=[InputRequired()])
     isVaccinated = BooleanField('Are you vaccinated?')
+
+#Admin tables view
+admin.add_view(MyModelView(User, db.session))
+admin.add_view(MyModelView(PhysicalClass, db.session))
+admin.add_view(MyModelView(Filled, db.session))
 
 #Remove GET and POST methods from this route
 @app.route('/', methods=['GET', 'POST'])
@@ -120,13 +133,17 @@ def upload_file():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
+        #Look for admin login..
+        if form.username.data == 'admin' and form.password.data == 'adminpass':
+            user = User.query.filter_by(username='admin').first()
+            login_user(user, remember=form.remember.data)
+            return redirect('/admin')
         user = User.query.filter_by(username=form.username.data).first()
         if user:
             if check_password_hash(user.password, form.password.data):
                 login_user(user, remember=form.remember.data)
                 return redirect('/dashboard')
         return '<h1> Invalid username or password! </h1>'
-        #return '<h1>' + form.username.data + ' ' + form.password.data + '</h1>'
     return render_template('login.html', form=form)
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -168,7 +185,7 @@ def dashboard():
                     if dayNumber == 1:
                         timeTable = batch['timeTable']['monday']
                     elif dayNumber == 2:
-                        timeTable = batch['timeTable']['monday']
+                        timeTable = batch['timeTable']['tuesday']
                     elif dayNumber == 3:
                         timeTable = batch['timeTable']['wednesday']
                     elif dayNumber == 4:

@@ -99,6 +99,22 @@ Dashboard
       .select-items div:hover, .same-as-selected {
       background-color: rgba(0, 0, 0, 0.1);
       }
+
+      /* Button styling */
+      .button {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+      }
+
+.button2 {background-color: #008CBA;} /* Blue */
   </style>
   <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -172,7 +188,7 @@ Dashboard
           document.write(timeTable[i]['class_name']+'<br>('+timeTable[i]['class_code']+')<br> Time:'+timeTable[i]['timeSlot']+' '+isAMorPM+'-'+(timeTable[i]['timeSlot']+1)+' '+nextDigitAMorPM+'<br></div><br>');
           document.write('<div class="custom-select" style="width:200px;position: relative;left:2%"><select name="preference[]"><option value="online">Select preference:</option><option value="online">Online</option><option value="offline">Offline</option></select></div></div><br> <br>')
         }
-        document.write('<button type="submit" style="position:relative;left:50%"> Submit Preferences </button>');
+        document.write('<button class="button" type="submit" style="position:relative;left:50%"> Submit Preferences </button>');
         document.write('</form>');
       }
     </script>
