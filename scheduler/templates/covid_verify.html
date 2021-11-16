@@ -1,0 +1,41 @@
+<!-- {% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+Covid Certificate Verification
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('.static', filename='signin.css')}}">
+{% endblock %} -->
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <style> 
+        input[type=text] {
+          width: 100%;
+          padding: 12px 20px;
+          margin: 8px 0;
+          box-sizing: border-box;
+          border: 1px solid #555;
+          outline: none;
+        }
+        
+        input[type=text]:focus {
+          background-color: lightblue;
+        }
+    </style>
+    <div style="display:flex;justify-content: center;">
+        <form class="form-covid" method="POST" action="#">
+            <label for="beneficiary_id"> Beneficiary Id</label>
+            <input type="text" name="beneficiary_id" required autofocus>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" style="width:30%">Submit</button>
+        </form>
+    </div>
+</html>
+{% endblock %}

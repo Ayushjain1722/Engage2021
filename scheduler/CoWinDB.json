@@ -1,0 +1,46 @@
+[
+	{
+		"beneficiary_id": "31366075639480",
+		"status": "Fully Vaccinated"
+	},
+	{
+		"beneficiary_id": "31366075639481",
+		"status": "Partially Vaccinated"
+	},
+	{
+		"beneficiary_id": "31366075639482",
+		"status": "Not Vaccinated"
+	},
+	{
+		"beneficiary_id": "31366075639483",
+		"status": "Fully Vaccinated"
+	},
+	{
+		"beneficiary_id": "31366075639484",
+		"status": "Partially Vaccinated"
+	},
+	{
+		"beneficiary_id": "31366075639485",
+		"status": "Not Vaccinated"
+	},
+	{
+		"beneficiary_id": "31366075639486",
+		"status": "Fully Vaccinated"
+	},
+	{
+		"beneficiary_id": "31366075639487",
+		"status": "Partially Vaccinated"
+	},
+	{
+		"beneficiary_id": "31366075639488",
+		"status": "Not Vaccinated"
+	},
+	{
+		"beneficiary_id": "31366075639489",
+		"status": "Fully Vaccinated"
+	},
+	{
+		"beneficiary_id": "31366075639490",
+		"status": "Partially Vaccinated"
+	}
+]

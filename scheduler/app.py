@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, IntegerField
@@ -13,17 +13,19 @@ import os
 import json
 from datetime import datetime
 from excelToJSON import converter
+import covidCertiVerification
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Thisisasecret'
 #Database for login and registration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user.db'
-#Database for physical classes preferences for the students
 app.config['SQLALCHEMY_BINDS'] = {
+    #Database for physical classes preferences for the students
     'offline': 'sqlite:///physicalClasses.db',
+    #Database with student's username/email who have filled their preferences
     'filled': 'sqlite:///filled.db'
 }
-#Database with student's username/email who have filled their preferences..
+
 
 #Specifying the maxium upload size of the time-table file
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
@@ -61,7 +63,8 @@ class User(UserMixin, db.Model):
     groupNumber = db.Column(db.String(3))
     degree = db.Column(db.String(5))
     year = db.Column(db.String(4))
-    isVaccinated = db.Column(db.Boolean)
+    #Integer field: 0 if not vaccinated, 1 if partially vaccinated and 2 if fully vaccinated
+    isVaccinated = db.Column(db.Integer)
 
 #Class for the physical classes database
 class PhysicalClass(db.Model):
@@ -72,6 +75,7 @@ class PhysicalClass(db.Model):
     classCode = db.Column(db.String(10))
     className = db.Column(db.String(30))
     timeSlot = db.Column(db.String(3))
+    isVaccinated = db.Column(db.Integer)
 
 #Class for student's who have filled their preferences
 class Filled(db.Model):
@@ -101,7 +105,7 @@ class RegisterForm(FlaskForm):
     groupNumber = StringField('Group Number (e.g: 1, 2, 3)', validators=[InputRequired(), Length(min=1, max=3)])
     degree = StringField('Degree (e.g: ug, pg)', validators=[InputRequired(), Length(min=2, max=5)])
     year = IntegerField('Year (e.g: 1, 2, 3, 4)', validators=[InputRequired()])
-    isVaccinated = BooleanField('Are you vaccinated?')
+    isVaccinated = IntegerField('Are you vaccinated?')
 
 #Admin tables view
 admin.add_view(MyModelView(User, db.session))
@@ -159,7 +163,7 @@ def signup():
                         groupNumber=form.groupNumber.data,
                         degree=form.degree.data,
                         year=form.year.data,
-                        isVaccinated=form.isVaccinated.data)
+                        isVaccinated=0)
         db.session.add(new_user)
         db.session.commit()
 
@@ -197,9 +201,12 @@ def dashboard():
                     else:
                         # timeTable = batch['timeTable']['monday']
                         timeTable.append("Enjoy your holiday!")
+    if len(timeTable) == 0:
+        flash("No classes for tomorrow!")
     alreadyFilled = Filled.query.filter_by(email=current_user.email).first() is not None 
     if alreadyFilled:
-        return render_template('dashboard.html', name=current_user.username, timeTable=timeTable, alreadyFilled="true")
+        flash("You have already filled your preferences")
+        return render_template('dashboard.html', name=current_user.username, timeTable=timeTable, alreadyFilled="true", vaccinationStatus=current_user.isVaccinated)
     #If the student fills the preferences
     if request.method == "POST":
         preferences = request.form.getlist('preference[]')
@@ -211,7 +218,8 @@ def dashboard():
                     teacherEmail = timeTable[idx]['teacher_email'],
                     classCode = timeTable[idx]['class_code'],
                     className = timeTable[idx]['class_name'],
-                    timeSlot = timeTable[idx]['timeSlot']
+                    timeSlot = timeTable[idx]['timeSlot'],
+                    isVaccinated = current_user.isVaccinated
                 )
                 db.session.add(student_entry)
                 db.session.commit()
@@ -220,9 +228,24 @@ def dashboard():
         filled = Filled(email=current_user.email)
         db.session.add(filled)
         db.session.commit()
-        return render_template('dashboard.html', name=current_user.username, timeTable=timeTable, alreadyFilled="true")
+        return render_template('dashboard.html', name=current_user.username, timeTable=timeTable, alreadyFilled="true", vaccinationStatus=int(current_user.isVaccinated))
         # return f"<h1>{preferences}</h1><h2>These preferences have been added to the database</h2>"
-    return render_template('dashboard.html', name=current_user.username, timeTable=timeTable, alreadyFilled="false")
+    return render_template('dashboard.html', name=current_user.username, timeTable=timeTable, alreadyFilled="false", vaccinationStatus=int(current_user.isVaccinated))
+
+@app.route('/covid_verify', methods=["GET", "POST"])
+@login_required
+def covid_verify():
+    if request.method == "POST":
+        beneficiary_id = request.form.get('beneficiary_id')
+        priority = covidCertiVerification.priority(beneficiary_id)
+        flash("Vaccination status updated")
+        flash(f"Status: {covidCertiVerification.getStatus(beneficiary_id)}, {priority}")
+        user_vaccination = User.query.filter_by(username=current_user.username).first()
+        user_vaccination.isVaccinated = priority
+        db.session.commit()
+        return redirect('/dashboard')
+    else:
+        return render_template('covid_verify.html')
 
 @app.route('/logout')
 @login_required
