@@ -84,22 +84,124 @@ body {
     margin-top: 0;
   }
   
-  
-  /*
-   * Placeholder dashboard ideas
-   */
-  
-  .placeholders {
-    margin-bottom: 30px;
-    text-align: center;
-  }
-  .placeholders h4 {
-    margin-bottom: 0;
-  }
-  .placeholder {
-    margin-bottom: 20px;
-  }
-  .placeholder img {
-    display: inline-block;
-    border-radius: 50%;
-  }
+
+  * {
+    box-sizing: border-box;
+    }
+
+    body {
+      /* font-family: Arial, Helvetica, sans-serif; */
+      font-family: cursive;
+      background-image: url('https://wallpaperaccess.com/full/2112.jpg');
+      height: 100%;
+      /* Center and scale the image nicely */
+      background-position: auto;
+      background-repeat: repeat;
+      background-size: cover;
+    }
+    /* Style the counter cards */
+    .card {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
+        padding: 16px;
+        text-align: center;
+        background-color: #f1f1f1;
+    }
+    /*Styling for the preference select box!*/
+    /*the container must be positioned relative:*/
+    .custom-select {
+    position: relative;
+    font-family: Arial;
+    }
+
+    .custom-select select {
+    display: none; /*hide original SELECT element:*/
+    }
+
+    .select-selected {
+    background-color: DodgerBlue;
+    }
+
+    /*style the arrow inside the select element:*/
+    .select-selected:after {
+    position: absolute;
+    content: "";
+    top: 14px;
+    right: 10px;
+    width: 0;
+    height: 0;
+    border: 6px solid transparent;
+    border-color: #fff transparent transparent transparent;
+    }
+
+    /*point the arrow upwards when the select box is open (active):*/
+    .select-selected.select-arrow-active:after {
+    border-color: transparent transparent #fff transparent;
+    top: 7px;
+    }
+
+    /*style the items (options), including the selected item:*/
+    .select-items div,.select-selected {
+    color: #ffffff;
+    padding: 8px 16px;
+    border: 1px solid transparent;
+    border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+    cursor: pointer;
+    user-select: none;
+    }
+
+    /*style items (options):*/
+    .select-items {
+    position: absolute;
+    background-color: DodgerBlue;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 99;
+    }
+
+    /*hide the items when the select box is closed:*/
+    .select-hide {
+    display: none;
+    }
+
+    .select-items div:hover, .same-as-selected {
+    background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    /* Button styling */
+    .button {
+      background-color: #4CAF50; /* Green */
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+
+.button2 {background-color: #008CBA;} /* Blue */
+
+/* #Message Flashes */
+.alert {
+  padding: 20px;
+  background-color: #2196F3;
+  color: white;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}

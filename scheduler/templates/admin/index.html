@@ -1,7 +1,11 @@
 {% extends 'admin/master.html' %}
+{% block head_css %}
+{{ super() }}
+ {% endblock %}
 
 {% block body %}
 <style>
+    
     .button {
         background-color: #4CAF50; /* Green */
         border: none;

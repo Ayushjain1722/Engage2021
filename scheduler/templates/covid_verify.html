@@ -14,9 +14,18 @@ Covid Certificate Verification
 <!DOCTYPE html>
 <html>
     <head>
-
+        <title>Covid Verification</title>
     </head>
     <style> 
+        body{
+            font-family: cursive;
+            background-image: url('https://torange.biz/photo/54/HD/covid-19-dark-background-54738.jpg');
+            height: 100%;
+            /* Center and scale the image nicely */
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: auto;
+        }
         input[type=text] {
           width: 100%;
           padding: 12px 20px;
@@ -30,11 +39,34 @@ Covid Certificate Verification
           background-color: lightblue;
         }
     </style>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{{ url_for('index') }}"><img src="https://png.pngtree.com/element_our/md/20180627/md_5b334611860fa.jpg" style="width:30x;height:30px"></a>
+            <a class="navbar-brand" href="{{ url_for('index') }}">Scheduler</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="#">Dashboard</a></li>
+              <li><a href="#">Settings</a></li>
+              <li><a href="#">Profile</a></li>
+              <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <br><br>
     <div style="display:flex;justify-content: center;">
         <form class="form-covid" method="POST" action="#">
-            <label for="beneficiary_id"> Beneficiary Id</label>
-            <input type="text" name="beneficiary_id" required autofocus>
-            <button class="btn btn-lg btn-primary btn-block" type="submit" style="width:30%">Submit</button>
+            <label for="beneficiary_id" style="color:white"> Beneficiary Id</label>
+            <input style="color:black" type="text" name="beneficiary_id" required autofocus>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" style="width:30%;margin-left: auto;margin-right: auto;">Submit</button>
         </form>
     </div>
 </html>

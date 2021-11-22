@@ -11,6 +11,21 @@ Login
 {% endblock %}
 
 {% block content %}
+    <style>
+      /* Overriding body attributes */
+      body {
+        /* font-family: Arial, Helvetica, sans-serif; */
+        font-family: cursive;
+        /* background-image: url('https://4kwallpapers.com/images/wallpapers/outrun-neon-dark-background-purple-3840x2160-4523.jpg'); */
+        background-image: url('https://images.hdqwalls.com/download/polygonal-abstract-red-dark-background-eo-1280x1024.jpg');
+        height: 100%;
+        /* Center and scale the image nicely */
+        background-position: center;
+        background-repeat: repeat;
+        background-size: cover;
+        color: white;
+      }
+    </style>
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
@@ -20,11 +35,12 @@ Login
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Project name</a>
+          <a class="navbar-brand" href="{{ url_for('index') }}"><img src="https://png.pngtree.com/element_our/md/20180627/md_5b334611860fa.jpg" style="width:30x;height:30px"></a>
+          <a class="navbar-brand" href="{{ url_for('index') }}">Scheduler</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
+            <li><a href="{{ url_for('index') }}">Home</a></li>
             <li><a href="{{ url_for('login') }}">Admin Login</a></li>
             <li><a href="{{ url_for('login') }}">Login</a></li>
             <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
@@ -33,6 +49,19 @@ Login
       </div>
     </nav>
     <div class="container">
+      {% with messages = get_flashed_messages() %} 
+        {% if messages %}
+          {% for message in messages %}
+          <br><br>
+            <div style="display: flex;justify-content: center;">
+              <div class="alert" style="width:70%;">
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+                {{message}}
+              </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+      {% endwith %}
 
       <form class="form-signin" method="POST" action="/login">
         <h2 class="form-signin-heading">Please sign in</h2>

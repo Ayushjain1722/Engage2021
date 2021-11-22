@@ -1,15 +1,27 @@
 {% extends "bootstrap/base.html" %}
 
 {% block title %}
-Demo App
+Microsoft Scheduler
 {% endblock %}
 
 {% block styles %}
 {{super()}}
 <link rel="stylesheet" href="{{url_for('.static', filename='starter-template.css')}}">
-{% endblock %}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
+{% endblock %}
 {% block content %}
+  
+  <!-- Overriding font-family for web-page -->
+  <style>
+    body{
+      font-family:cursive;
+    }
+  </style>
+
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
@@ -19,11 +31,15 @@ Demo App
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Project name</a>
+          <a class="navbar-brand" href="{{ url_for('index') }}"><img src="https://png.pngtree.com/element_our/md/20180627/md_5b334611860fa.jpg" style="width:30x;height:30px"></a>
+          <a class="navbar-brand" href="{{ url_for('index') }}"> 
+            <!-- <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2v8-N-SCNJkoZw9FQDc-rh_OSGlG9LYzxIA&usqp=CAU" width="100" height:"100" class="d-inline-block align-top" alt=""> -->
+            Scheduler
+          </a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
+            <li class="active"><a href="{{ url_for('index') }}">Home</a></li>
             <li><a href="{{ url_for('login') }}">Admin Login</a></li>
             <li><a href="{{ url_for('login') }}">Login</a></li>
             <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
@@ -32,12 +48,84 @@ Demo App
       </div>
     </nav>
 
+    <br>
+    <!-- Carousel Template -->
+    <div class="container" >
+      <div id="myCarousel" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+          <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+          <li data-target="#myCarousel" data-slide-to="1"></li>
+          <li data-target="#myCarousel" data-slide-to="2"></li>
+        </ol>
+    
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner">
+          <div class="item active">
+            <!-- <img src="https://alterline.co.uk/wp-content/uploads/2019/06/shutterstock_1373266784.jpg" alt="World class library"> -->
+            <img src="https://www.cumbria.ac.uk/media/Stock-Image-Study-Group.jpg" alt="World class library" style="width:1500px;height:800px">
+          </div>
+    
+          <div class="item">
+            <img src="https://www.yourtango.com/sites/default/files/styles/header_slider/public/image_blog/motivational-quotes-for-kids-main.jpg?itok=SSVUDLSF" alt="Motivational Quote" style="width:1500px;height:800px">
+          </div>
+        
+          <div class="item">
+            <img src="https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F24%2F2020%2F10%2F05%2F1.png" alt="Motivational Quote" style="width:1500px;height:800px">
+          </div>
+        </div>
+    
+        <!-- Left and right controls -->
+        <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+          <span class="glyphicon glyphicon-chevron-left"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#myCarousel" data-slide="next">
+          <span class="glyphicon glyphicon-chevron-right"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
+    </div>
+
+
     <div class="container">
 
       <div class="starter-template">
-        <h1>Bootstrap starter template</h1>
-        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
+        <h1 style="color:white">Bulletin Board</h1>
+        
       </div>
 
+      <!-- Bulletin Board -->
+      <script>
+        var board = {{notices|tojson}};
+        if(board.length > 0){
+          document.write("<center><div class='scrollable' id='ecran'><div class='row'>");
+        }
+        for(i=board.length-1;i>=0;i--){
+          document.write("<div class='row'><div class='card'><h3>");
+          document.write(board[i]['title']+"</h3><p><a href='"+board[i]['link']+"' target='_blank'> Link</a></p></div></div><br>");
+        }
+        if(board.length > 0){
+          document.write("</div></center>");
+        }
+      </script>
+      <script type='text/javascript'>
+          function ScrollDiv(){
+          
+             if(document.getElementById('ecran').scrollTop<(document.getElementById('ecran').scrollHeight-document.getElementById('ecran').offsetHeight)){-1
+                   document.getElementById('ecran').scrollTop=document.getElementById('ecran').scrollTop+1
+                   }
+             else {document.getElementById('ecran').scrollTop=0;}
+          }
+          
+          setInterval(ScrollDiv,50)
+        </script>
+
     </div><!-- /.container -->
+    <br>
+    <footer>
+      <p>Microsoft Corporation is an American multinational technology corporation which produces computer software, consumer electronics, personal computers, and related services.</p>
+      <img src="https://png.pngtree.com/element_our/md/20180627/md_5b334611860fa.jpg" style="width=50x;height:50px">
+      <p>Copyright &copy; Ayush Jain 2021</p>
+  </footer>
 {% endblock %}

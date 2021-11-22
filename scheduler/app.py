@@ -9,11 +9,16 @@ from werkzeug.utils import secure_filename
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
+from flask_mail import Mail, Message
 import os
 import json
+import logging
 from datetime import datetime
+from apscheduler.scheduler import Scheduler
 from excelToJSON import converter
 import covidCertiVerification
+from selectionAlgo import studentSelection
+from credentials import mailingID, mailingPassword
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Thisisasecret'
@@ -23,7 +28,8 @@ app.config['SQLALCHEMY_BINDS'] = {
     #Database for physical classes preferences for the students
     'offline': 'sqlite:///physicalClasses.db',
     #Database with student's username/email who have filled their preferences
-    'filled': 'sqlite:///filled.db'
+    'filled': 'sqlite:///filled.db',
+    'bulletin': 'sqlite:///bulletinboard.db'
 }
 
 
@@ -32,10 +38,17 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 Bootstrap(app)
 db = SQLAlchemy(app)
 admin = Admin(app)
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = mailingID
+app.config['MAIL_PASSWORD'] = mailingPassword
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+mail = Mail(app)
 
 #For uploading of Time table file
 path = os.getcwd()
@@ -51,6 +64,8 @@ ALLOWED_EXTENSIONS = set(['txt', 'csv', 'xlsx'])
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+#Scheduling the cron job for daily purpose
 
 #Class for user database
 class User(UserMixin, db.Model):
@@ -76,16 +91,60 @@ class PhysicalClass(db.Model):
     className = db.Column(db.String(30))
     timeSlot = db.Column(db.String(3))
     isVaccinated = db.Column(db.Integer)
+    timeStamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 #Class for student's who have filled their preferences
 class Filled(db.Model):
     __bind_key__ = 'filled'
-    email = db.Column(db.String(50), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(50))
+
+#Class for bulletin board
+class Bulletin(db.Model):
+    __bind_key__ = 'bulletin'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(30))
+    link = db.Column(db.String(100))
 
 #class for admin page table views
 class MyModelView(ModelView):
     def is_accessible(self):
         return current_user.is_authenticated
+
+def job():
+    studentList, teacherList = studentSelection(User.query.all(), PhysicalClass.query.all())
+    #Sending the mails to all students
+    for student in studentList:
+        msg = Message('Physical Classes Update', sender="engage2021ayush@gmail.com", recipients=['ayushjain1722@gmail.com'])
+        msg.body = "Dear student, \nPlease find below the physical classes alotted to you for tomorrow."
+        filename = student['email'] + '.csv'
+        with app.open_resource(f"mails/{filename}", "rb") as fp:   
+            msg.attach(filename="classes.csv", content_type="text/plain", data=fp.read())  
+        # mail.send(msg)
+        os.remove(f"mails/{filename}")
+        print("Sent the email!")
+    #Sending the mails to all teachers
+    for teacher in teacherList:
+        msg = Message('Students list for physical classes', sender="engage2021ayush@gmail.com", recipients=[teacher['email']])
+        msg.body = "Respected Professor, \nPlease find below the students list for tomorrow's physical classes."
+        filename = teacher['email'] + '.csv'
+        with app.open_resource(f"./mails/{filename}", "rb") as fp:
+            msg.attach(filename="students.csv", content_type="text/plain", data=fp.read())
+        # mail.send(msg)
+        os.remove(f"./mails/{filename}")
+        print("Sent the email!")
+
+# sched = Scheduler()
+# sched.start()        
+
+# def my_job():
+#     print("Cron job is running")
+    
+#     # selection(PhysicalClass.query.all(), User.query.all())
+        
+
+# sched.add_job(my_job, 'cron', day_of_week='mon-sat', hour=0, minute=0)
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -111,11 +170,15 @@ class RegisterForm(FlaskForm):
 admin.add_view(MyModelView(User, db.session))
 admin.add_view(MyModelView(PhysicalClass, db.session))
 admin.add_view(MyModelView(Filled, db.session))
+admin.add_view(MyModelView(Bulletin, db.session))
 
 #Remove GET and POST methods from this route
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')
+    dictFormat = []
+    for obj in Bulletin.query.all():
+        dictFormat.append({'title': obj.__dict__['title'], 'link': obj.__dict__['link']})
+    return render_template('index.html', notices=dictFormat)
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
@@ -130,7 +193,8 @@ def upload_file():
                     file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'TimeTable.xlsx'))
         
         converter(UPLOAD_FOLDER + '/TimeTable.xlsx')
-        return render_template('/index.html')
+        flash('Time table uploaded successfully')
+        return render_template('/upload.html')
     return render_template('/upload.html')
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -138,7 +202,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         #Look for admin login..
-        if form.username.data == 'admin' and form.password.data == 'adminpass':
+        if form.username.data == 'admin' and form.password.data == User.query.filter_by(username=form.username.data).first().password:
             user = User.query.filter_by(username='admin').first()
             login_user(user, remember=form.remember.data)
             return redirect('/admin')
@@ -147,27 +211,32 @@ def login():
             if check_password_hash(user.password, form.password.data):
                 login_user(user, remember=form.remember.data)
                 return redirect('/dashboard')
-        return '<h1> Invalid username or password! </h1>'
+        flash('Invalid username or password !')
+        return redirect('/login')
     return render_template('login.html', form=form)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    form = RegisterForm()
-    if form.validate_on_submit():
-        hashed_password = generate_password_hash(form.password.data, method='sha256')
-        new_user = User(username=form.username.data, 
-                        email=form.email.data, 
-                        password=hashed_password,
-                        rollNumber=form.rollNumber.data,
-                        branch=form.branch.data,
-                        groupNumber=form.groupNumber.data,
-                        degree=form.degree.data,
-                        year=form.year.data,
-                        isVaccinated=0)
-        db.session.add(new_user)
-        db.session.commit()
-
-        return '<h1> New User has been created..! </h1>'
+    try:
+        form = RegisterForm()
+        if form.validate_on_submit():
+            hashed_password = generate_password_hash(form.password.data, method='sha256')
+            new_user = User(username=form.username.data, 
+                            email=form.email.data, 
+                            password=hashed_password,
+                            rollNumber=form.rollNumber.data,
+                            branch=form.branch.data,
+                            groupNumber=form.groupNumber.data,
+                            degree=form.degree.data,
+                            year=form.year.data,
+                            isVaccinated=0)
+            db.session.add(new_user)
+            db.session.commit()
+            flash('New User Created!')
+            return redirect('/login')
+    except:
+        flash('One or more entries already exists in the database. Please enter your details carefully.')
+        return redirect('/signup')
     return render_template('signup.html', form=form)
 
 @app.route('/dashboard', methods=['GET', 'POST'])
@@ -182,7 +251,7 @@ def dashboard():
         if current_user.degree == entry['degree'] and current_user.year == entry['year']:
             for batch in entry['time_table_data']:
                 #Check if batch number and branch matches
-                if current_user.branch == batch['branch'] and current_user.groupNumber == batch['batchNumber']:
+                if current_user.branch == batch['branch'] and str(current_user.groupNumber).strip() == str(batch['batchNumber']).strip():
                     #Now according to the day, showcase the time table..
                     dayNumber = datetime.today().weekday() + 2
                     #Need to show the next day's time-table, so showcase that
@@ -193,19 +262,20 @@ def dashboard():
                     elif dayNumber == 3:
                         timeTable = batch['timeTable']['wednesday']
                     elif dayNumber == 4:
-                        timeTable = batch['timeTable']['thursday']
+                        timeTable = batch['timeTable']['monday']
                     elif dayNumber == 5:
                         timeTable = batch['timeTable']['friday']
                     elif dayNumber == 6:
                         timeTable = batch['timeTable']['saturday']
                     else:
-                        # timeTable = batch['timeTable']['monday']
-                        timeTable.append("Enjoy your holiday!")
+                        timeTable = batch['timeTable']['monday']
+                        # timeTable.append("Enjoy your holiday!")
+                        # timeTable = []
     if len(timeTable) == 0:
         flash("No classes for tomorrow!")
     alreadyFilled = Filled.query.filter_by(email=current_user.email).first() is not None 
     if alreadyFilled:
-        flash("You have already filled your preferences")
+        flash("You have already filled your preferences or time for filling is over!")
         return render_template('dashboard.html', name=current_user.username, timeTable=timeTable, alreadyFilled="true", vaccinationStatus=current_user.isVaccinated)
     #If the student fills the preferences
     if request.method == "POST":
@@ -239,7 +309,7 @@ def covid_verify():
         beneficiary_id = request.form.get('beneficiary_id')
         priority = covidCertiVerification.priority(beneficiary_id)
         flash("Vaccination status updated")
-        flash(f"Status: {covidCertiVerification.getStatus(beneficiary_id)}, {priority}")
+        flash(f"Status: {covidCertiVerification.getStatus(beneficiary_id)}")
         user_vaccination = User.query.filter_by(username=current_user.username).first()
         user_vaccination.isVaccinated = priority
         db.session.commit()
@@ -253,5 +323,31 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+#Error handlers: Commonly encountered errors which are possible in the application
+@app.errorhandler(400)
+def not_found(e):
+    return render_template('error.html', error=e, code=400), 400
+@app.errorhandler(404)
+def not_found(e):
+    return render_template('error.html', error=e, code=404), 404
+@app.errorhandler(403)
+def not_found(e):
+    return render_template('error.html', error=e, code=403), 403
+@app.errorhandler(500)
+def not_found(e):
+    return render_template('error.html', error=e, code=500), 500
+@app.errorhandler(502)
+def not_found(e):
+    return render_template('error.html', error=e, code=502), 502
+@app.errorhandler(503)
+def not_found(e):
+    return render_template('error.html', error=e, code=503), 503
+@app.errorhandler(504)
+def not_found(e):
+    return render_template('error.html', error=e, code=504), 504
+
+with app.app_context():
+    job()
 if __name__ == '__main__':
+    logging.basicConfig(filename="logs.log", level=logging.DEBUG)
     app.run(debug=True)

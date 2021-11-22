@@ -24,119 +24,9 @@ Dashboard
     
   </head>
   <style>
-      * {
-      box-sizing: border-box;
+      body{
+        font-family:cursive;
       }
-
-      body {
-      font-family: Arial, Helvetica, sans-serif;
-      }
-      /* Style the counter cards */
-      .card {
-          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
-          padding: 16px;
-          text-align: center;
-          background-color: #f1f1f1;
-      }
-      /*Styling for the preference select box!*/
-      /*the container must be positioned relative:*/
-      .custom-select {
-      position: relative;
-      font-family: Arial;
-      }
-
-      .custom-select select {
-      display: none; /*hide original SELECT element:*/
-      }
-
-      .select-selected {
-      background-color: DodgerBlue;
-      }
-
-      /*style the arrow inside the select element:*/
-      .select-selected:after {
-      position: absolute;
-      content: "";
-      top: 14px;
-      right: 10px;
-      width: 0;
-      height: 0;
-      border: 6px solid transparent;
-      border-color: #fff transparent transparent transparent;
-      }
-
-      /*point the arrow upwards when the select box is open (active):*/
-      .select-selected.select-arrow-active:after {
-      border-color: transparent transparent #fff transparent;
-      top: 7px;
-      }
-
-      /*style the items (options), including the selected item:*/
-      .select-items div,.select-selected {
-      color: #ffffff;
-      padding: 8px 16px;
-      border: 1px solid transparent;
-      border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
-      cursor: pointer;
-      user-select: none;
-      }
-
-      /*style items (options):*/
-      .select-items {
-      position: absolute;
-      background-color: DodgerBlue;
-      top: 100%;
-      left: 0;
-      right: 0;
-      z-index: 99;
-      }
-
-      /*hide the items when the select box is closed:*/
-      .select-hide {
-      display: none;
-      }
-
-      .select-items div:hover, .same-as-selected {
-      background-color: rgba(0, 0, 0, 0.1);
-      }
-
-      /* Button styling */
-      .button {
-        background-color: #4CAF50; /* Green */
-        border: none;
-        color: white;
-        padding: 15px 32px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 4px 2px;
-        cursor: pointer;
-      }
-
-  .button2 {background-color: #008CBA;} /* Blue */
-
-  /* #Message Flashes */
-  .alert {
-    padding: 20px;
-    background-color: #2196F3;
-    color: white;
-  }
-
-  .closebtn {
-    margin-left: 15px;
-    color: white;
-    font-weight: bold;
-    float: right;
-    font-size: 22px;
-    line-height: 20px;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-
-  .closebtn:hover {
-    color: black;
-  }
   </style>
   <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -148,7 +38,8 @@ Dashboard
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Project name</a>
+          <a class="navbar-brand" href="{{ url_for('index') }}"><img src="https://png.pngtree.com/element_our/md/20180627/md_5b334611860fa.jpg" style="width:30x;height:30px"></a>
+          <a class="navbar-brand" href="{{ url_for('index') }}">Scheduler</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
@@ -163,18 +54,15 @@ Dashboard
             </script>
             <li><a href="{{ url_for('logout') }}">Log Out</a></li>
           </ul>
-          <form class="navbar-form navbar-right">
-            <input type="text" class="form-control" placeholder="Search...">
-          </form>
         </div>
       </div>
     </nav>
     <div class="container"></div>
-    <h1 style="display:flex;justify-content:end">
+    <p style="display:flex;justify-content:end;color:white">
       Hi, {{name}}
-    </h1>
-
-    <p>{{timeTable}}</p>
+    </p>
+    <br><br>
+    <!-- <p>{{timeTable}}</p> -->
     {% with messages = get_flashed_messages() %} 
       {% if messages %}
         {% for message in messages %}
@@ -193,7 +81,9 @@ Dashboard
       var alreadyFilled= Boolean({{alreadyFilled}});
       if(alreadyFilled==true){
         // document.write('<div class="alert"> <span class="closebtn" onclick="this.parentElement.style.display=\'none\';">&times;</span> You have already filled your preferences.</div>');
-        
+        if(timeTable.length<1){
+          document.write('<img src="https://st2.depositphotos.com/5312214/9984/i/950/depositphotos_99846810-stock-photo-no-class-tomorrow-adhesive-label.jpg" style="display: block;margin-left: auto;margin-right: auto;width: 50%;"><br>');
+        }
         for(i=0;i<timeTable.length;i++){
           var isAMorPM = "AM";
           if(timeTable[i]['timeSlot']>=8 && timeTable[i]['timeSlot']<12){
@@ -211,6 +101,9 @@ Dashboard
           document.write(timeTable[i]['class_name']+'<br>('+timeTable[i]['class_code']+')<br> Time:'+timeTable[i]['timeSlot']+' '+isAMorPM+'-'+(timeTable[i]['timeSlot']+1)+' '+nextDigitAMorPM+'<br></div></div><br>');
         }
       }else{
+        if(timeTable.length<1){
+          document.write('<img src="https://st2.depositphotos.com/5312214/9984/i/950/depositphotos_99846810-stock-photo-no-class-tomorrow-adhesive-label.jpg" style="display: block;margin-left: auto;margin-right: auto;width: 50%;"><br>');
+        }
         document.write('<form action="#" method="POST" >');
         for(i=0;i<timeTable.length;i++){
           document.write('<div style="display: flex;flex-direction:row;justify-content: center"><div class="card" style="width:40%">');
@@ -229,7 +122,7 @@ Dashboard
           document.write(timeTable[i]['class_name']+'<br>('+timeTable[i]['class_code']+')<br> Time:'+timeTable[i]['timeSlot']+' '+isAMorPM+'-'+(timeTable[i]['timeSlot']+1)+' '+nextDigitAMorPM+'<br></div><br>');
           document.write('<div class="custom-select" style="width:200px;position: relative;left:2%"><select name="preference[]"><option value="online">Select preference:</option><option value="online">Online</option><option value="offline">Offline</option></select></div></div><br> <br>')
         }
-        document.write('<button class="button" type="submit" style="position:relative;left:50%"> Submit Preferences </button>');
+        document.write('<div style="display: flex;justify-content: center;align-items: center;height: 200px;"><button class="button" type="submit"> Submit Preferences </button></div>');
         document.write('</form>');
       }
     </script>
@@ -318,149 +211,4 @@ Dashboard
       document.addEventListener("click", closeAllSelect);
   </script>
 </html>    
-
-    <!--<div class="container-fluid">
-      <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar">
-            <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
-            <li><a href="#">Reports</a></li>
-            <li><a href="#">Analytics</a></li>
-            <li><a href="#">Export</a></li>
-          </ul>
-          <ul class="nav nav-sidebar">
-            <li><a href="">Nav item</a></li>
-            <li><a href="">Nav item again</a></li>
-            <li><a href="">One more nav</a></li>
-            <li><a href="">Another nav item</a></li>
-            <li><a href="">More navigation</a></li>
-          </ul>
-          <ul class="nav nav-sidebar">
-            <li><a href="">Nav item again</a></li>
-            <li><a href="">One more nav</a></li>
-            <li><a href="">Another nav item</a></li>
-          </ul>
-        </div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <h1 class="page-header">Welcome, {{ name }} </h1>
-
-          <div class="row placeholders">
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-            </div>
-          </div>
-
-          <h2 class="sub-header">Section title</h2>
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Header</th>
-                  <th>Header</th>
-                  <th>Header</th>
-                  <th>Header</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>1,001</td>
-                  <td>Lorem</td>
-                  <td>ipsum</td>
-                  <td>dolor</td>
-                  <td>sit</td>
-                </tr>
-                <tr>
-                  <td>1,002</td>
-                  <td>amet</td>
-                  <td>consectetur</td>
-                  <td>adipiscing</td>
-                  <td>elit</td>
-                </tr>
-                <tr>
-                  <td>1,003</td>
-                  <td>Integer</td>
-                  <td>nec</td>
-                  <td>odio</td>
-                  <td>Praesent</td>
-                </tr>
-                <tr>
-                  <td>1,003</td>
-                  <td>libero</td>
-                  <td>Sed</td>
-                  <td>cursus</td>
-                  <td>ante</td>
-                </tr>
-                <tr>
-                  <td>1,004</td>
-                  <td>dapibus</td>
-                  <td>diam</td>
-                  <td>Sed</td>
-                  <td>nisi</td>
-                </tr>
-                <tr>
-                  <td>1,005</td>
-                  <td>Nulla</td>
-                  <td>quis</td>
-                  <td>sem</td>
-                  <td>at</td>
-                </tr>
-                <tr>
-                  <td>1,006</td>
-                  <td>nibh</td>
-                  <td>elementum</td>
-                  <td>imperdiet</td>
-                  <td>Duis</td>
-                </tr>
-                <tr>
-                  <td>1,007</td>
-                  <td>sagittis</td>
-                  <td>ipsum</td>
-                  <td>Praesent</td>
-                  <td>mauris</td>
-                </tr>
-                <tr>
-                  <td>1,008</td>
-                  <td>Fusce</td>
-                  <td>nec</td>
-                  <td>tellus</td>
-                  <td>sed</td>
-                </tr>
-                <tr>
-                  <td>1,009</td>
-                  <td>augue</td>
-                  <td>semper</td>
-                  <td>porta</td>
-                  <td>Mauris</td>
-                </tr>
-                <tr>
-                  <td>1,010</td>
-                  <td>massa</td>
-                  <td>Vestibulum</td>
-                  <td>lacinia</td>
-                  <td>arcu</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div> -->
 {% endblock %}

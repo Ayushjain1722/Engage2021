@@ -1,19 +1,91 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}
+Upload Time Table
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('.static', filename='starter-template.css')}}">
+
+{% endblock %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Demo app</title>
-    <!-- <link rel="stylesheet" href="{{url_for('static', filename='css/template.css') }}"> -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-  </head>
+  
+  <style>
+      body{
+            font-family: cursive;
+            background-image: url('https://4kwallpapers.com/images/wallpapers/outrun-neon-dark-background-purple-3840x2160-4523.jpg');
+            height: 100%;
+            /* Center and scale the image nicely */
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: auto;
+      }
+      /* #Message Flashes */
+      .alert {
+        padding: 20px;
+        background-color: #2196F3;
+        color: white;
+      }
+      .closebtn {
+        margin-left: 15px;
+        color: white;
+        font-weight: bold;
+        float: right;
+        font-size: 22px;
+        line-height: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .closebtn:hover {
+        color: black;
+      }
+  </style>
   <body>
-      <button class="btn btn-dark btn-lg" style="position: absolute;top:40%;left:49%;" onclick="myFunction()">Get started</button>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{{ url_for('admin.index') }}"><img src="https://png.pngtree.com/element_our/md/20180627/md_5b334611860fa.jpg" style="width:30x;height:30px"></a>
+            <a class="navbar-brand" href="{{ url_for('admin.index') }}"> 
+              <!-- <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2v8-N-SCNJkoZw9FQDc-rh_OSGlG9LYzxIA&usqp=CAU" width="100" height:"100" class="d-inline-block align-top" alt=""> -->
+              Scheduler
+            </a>
+          </div>
+          <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="{{ url_for('admin.index') }}">Home</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+      <br><br>
+      <div class="container">
+        {% with messages = get_flashed_messages() %} 
+          {% if messages %}
+            {% for message in messages %}
+            <br><br>
+              <div style="display: flex;justify-content: center;">
+                <div class="alert" style="width:70%;">
+                  <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+                  {{message}}
+                </div>
+              </div>
+              {% endfor %}
+          {% endif %}
+        {% endwith %}
+        <br><br>
+      <button class="btn btn-dark btn-lg" style="display:flex; justify-content: center;margin-left: auto;margin-right: auto;" onclick="myFunction()">Upload Time Table</button>
       <div id="fileupload" style="font-family:Pacifico; display:none">
-        <h2 style="background-color:yellow; position: absolute;top:50%;left:45%;">Select file(s) to upload</h2>
-        <p style="position: absolute;top:55%;left:45%;">
+        <p >
             {% with messages = get_flashed_messages() %}
             {% if messages %}
                 <ul class=flashes>
@@ -26,11 +98,11 @@
         </p>
         <form style="color:blue" method="post" action="/upload" enctype="multipart/form-data">
             <dl>
-                <p style="position: absolute;top:60%;left:45%">
+                <p style="display:flex; justify-content:center">
                     <input class="btn btn-primary" type="file" name="files[]" multiple="false" autocomplete="off" required>
                 </p>
             </dl>
-            <p style="position: absolute; top:70%; left:52%">
+            <p style="display:flex; justify-content:center">
                 <input class="btn btn-primary" type="submit" value="Submit">
             </p>
         </form>
@@ -48,3 +120,4 @@
       </script>
   </body>
 </html>
+{% endblock %}
