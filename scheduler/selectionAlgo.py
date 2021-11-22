@@ -1,5 +1,5 @@
 import csv
-from config import threshold
+from scheduler.config import threshold
 
 def getDetails(studentEmail, UserList):
     for student in UserList:
