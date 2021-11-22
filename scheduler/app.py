@@ -15,11 +15,11 @@ import json
 import logging
 from datetime import datetime
 from flask_apscheduler import APScheduler
-from excelToJSON import converter
-import covidCertiVerification
-from selectionAlgo import studentSelection
-from credentials import mailingID, mailingPassword
-from config import cronTimeHour, cronTimeMinute
+from scheduler.excelToJSON import converter
+import scheduler.covidCertiVerification
+from scheduler.selectionAlgo import studentSelection
+from scheduler.credentials import mailingID, mailingPassword
+from scheduler.config import cronTimeHour, cronTimeMinute
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Thisisasecret'
