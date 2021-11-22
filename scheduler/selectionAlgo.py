@@ -1,5 +1,5 @@
 import csv
-from credentials import threshold
+from config import threshold
 
 def getDetails(studentEmail, UserList):
     for student in UserList:

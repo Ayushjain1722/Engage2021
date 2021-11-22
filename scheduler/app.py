@@ -14,11 +14,12 @@ import os
 import json
 import logging
 from datetime import datetime
-from apscheduler.scheduler import Scheduler
+from flask_apscheduler import APScheduler
 from excelToJSON import converter
 import covidCertiVerification
 from selectionAlgo import studentSelection
 from credentials import mailingID, mailingPassword
+from config import cronTimeHour, cronTimeMinute
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Thisisasecret'
@@ -49,6 +50,9 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 mail = Mail(app)
+
+if not app.debug or os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+    scheduler = APScheduler()
 
 #For uploading of Time table file
 path = os.getcwd()
@@ -111,7 +115,7 @@ class MyModelView(ModelView):
     def is_accessible(self):
         return current_user.is_authenticated
 
-def job():
+def scheduledTask():
     studentList, teacherList = studentSelection(User.query.all(), PhysicalClass.query.all())
     #Sending the mails to all students
     for student in studentList:
@@ -120,9 +124,9 @@ def job():
         filename = student['email'] + '.csv'
         with app.open_resource(f"mails/{filename}", "rb") as fp:   
             msg.attach(filename="classes.csv", content_type="text/plain", data=fp.read())  
-        # mail.send(msg)
+        with app.app_context():
+            mail.send(msg)
         os.remove(f"mails/{filename}")
-        print("Sent the email!")
     #Sending the mails to all teachers
     for teacher in teacherList:
         msg = Message('Students list for physical classes', sender="engage2021ayush@gmail.com", recipients=[teacher['email']])
@@ -130,21 +134,16 @@ def job():
         filename = teacher['email'] + '.csv'
         with app.open_resource(f"./mails/{filename}", "rb") as fp:
             msg.attach(filename="students.csv", content_type="text/plain", data=fp.read())
-        # mail.send(msg)
+        with app.app_context():
+            mail.send(msg)
         os.remove(f"./mails/{filename}")
-        print("Sent the email!")
-
-# sched = Scheduler()
-# sched.start()        
-
-# def my_job():
-#     print("Cron job is running")
-    
-#     # selection(PhysicalClass.query.all(), User.query.all())
-        
-
-# sched.add_job(my_job, 'cron', day_of_week='mon-sat', hour=0, minute=0)
-
+    #Delete all entries from the physical and filled databases
+    try:
+        db.session.query(PhysicalClass).delete()
+        db.session.query(Filled).delete()
+        db.session.commit()
+    except:
+        db.session.rollback()
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -273,7 +272,12 @@ def dashboard():
                         # timeTable = []
     if len(timeTable) == 0:
         flash("No classes for tomorrow!")
+    #Insert time checking code here
     alreadyFilled = Filled.query.filter_by(email=current_user.email).first() is not None 
+    timeNow = datetime.now()
+    #If time for filling is over, don't allow any more submissions
+    if timeNow.hour >= cronTimeHour and timeNow.minute >= cronTimeMinute:
+        alreadyFilled = True
     if alreadyFilled:
         flash("You have already filled your preferences or time for filling is over!")
         return render_template('dashboard.html', name=current_user.username, timeTable=timeTable, alreadyFilled="true", vaccinationStatus=current_user.isVaccinated)
@@ -346,8 +350,8 @@ def not_found(e):
 def not_found(e):
     return render_template('error.html', error=e, code=504), 504
 
-with app.app_context():
-    job()
 if __name__ == '__main__':
     logging.basicConfig(filename="logs.log", level=logging.DEBUG)
-    app.run(debug=True)
+    scheduler.add_job(id='Scheduled task', func=scheduledTask, trigger='cron', hour=cronTimeHour, minute=cronTimeMinute)
+    scheduler.start()    
+    app.run(debug=True, use_reloader=False)
