@@ -8,8 +8,6 @@ Project Repository for Microsoft Engage 2021.
 
 #### Demo Video Link: 
 
-## Flowchart Diagram
-![image](https://user-images.githubusercontent.com/42894689/143010630-18985554-2ad2-4ba4-b46c-2f30af69d512.png)
 
 ## Tech Stack Used
 1. Flask (Backend) 
@@ -27,6 +25,19 @@ Project Repository for Microsoft Engage 2021.
 4. Heroku (Hosting website)
 
 ![image](https://user-images.githubusercontent.com/42894689/133317602-42753fcb-f12e-45b5-8983-715964902754.png)
+
+## Flowchart Diagram
+![image](https://user-images.githubusercontent.com/42894689/143010630-18985554-2ad2-4ba4-b46c-2f30af69d512.png)
+
+## Databases Schemas
+![image](https://user-images.githubusercontent.com/42894689/143095720-83eebac9-9687-43bb-904d-dd40704a8751.png)
+
+![image](https://user-images.githubusercontent.com/42894689/143095760-4f90d601-5ee5-4d7b-a3c0-0937069ff5b9.png)
+
+![image](https://user-images.githubusercontent.com/42894689/143095781-f984a943-d324-4574-ac92-f4ec94310178.png)
+
+![image](https://user-images.githubusercontent.com/42894689/143095790-0a1d242a-e87c-4709-ae8a-e9b642ceead7.png)
+
 
 ## UI Screenshots and Examples
 
