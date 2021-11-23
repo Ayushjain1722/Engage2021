@@ -3,6 +3,7 @@ Project Repository for Microsoft Engage 2021.
 
 #### Name: AYUSH JAIN
 #### College Name: THAPAR INSTITUTE OF ENGINEERING AND TECHNOLOGY
+### Project Title: SCHEDULER
 
 #### Link to Live Project: https://scheduler-enagage.herokuapp.com/
 
