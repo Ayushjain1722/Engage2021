@@ -95,3 +95,15 @@ Project Repository for Microsoft Engage 2021.
 
 ![image](https://user-images.githubusercontent.com/42894689/143130941-38a7e5ad-32d8-402a-91f5-2fa66cdf8e17.png)
 ![image](https://user-images.githubusercontent.com/42894689/143131033-b2fe51f8-cba5-455f-a508-1609393461be.png)
+
+### Mails sent to the teachers
+
+![image](https://user-images.githubusercontent.com/42894689/143131346-e3dfe498-8c70-499a-9266-811ccfeef032.png)
+![image](https://user-images.githubusercontent.com/42894689/143131441-6049d155-f6da-415e-8360-d2f9608aabd8.png)
+
+### Mails sent to the students
+
+![image](https://user-images.githubusercontent.com/42894689/143131543-af8030b3-74b3-4038-afb2-d3f57ee5d2a5.png)
+![image](https://user-images.githubusercontent.com/42894689/143131609-0cad0a18-ecd4-4aa4-bd68-f51f9568b051.png)
+
+
