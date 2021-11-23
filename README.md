@@ -52,3 +52,43 @@ Project Repository for Microsoft Engage 2021.
 
 ## UI Screenshots and Examples
 
+### Home Screen (Laptop and phone)
+
+![image](https://user-images.githubusercontent.com/42894689/143127172-cdc92150-0c68-41c2-a32b-fa1ea5ad3edb.png)
+![image](https://user-images.githubusercontent.com/42894689/143127505-e69ce3c0-1b7f-4a49-9b71-d264230de177.png)
+![image](https://user-images.githubusercontent.com/42894689/143127973-f4e8f187-dc6b-47f2-b2a5-c320e7d0bbc7.png)
+
+### Login Screen (Laptop and phone)
+
+![image](https://user-images.githubusercontent.com/42894689/143124859-829961c1-78bc-40c0-b89d-4fdecceca37c.png)
+![image](https://user-images.githubusercontent.com/42894689/143125185-2bdaa6f2-ceb2-48e8-be11-9e527726ec00.png)
+
+### Signup Screen (Laptop and phone)
+
+![image](https://user-images.githubusercontent.com/42894689/143126133-a866c85f-a21f-4ed7-9781-2708db051c29.png)
+![image](https://user-images.githubusercontent.com/42894689/143126397-ca9c9952-9215-4ce3-b557-d15cdb537e7b.png)
+
+### Admin page (Laptop and phone)
+
+![image](https://user-images.githubusercontent.com/42894689/143129336-aadc7ea9-4820-4ce3-9719-61f5655dc2a3.png)
+![image](https://user-images.githubusercontent.com/42894689/143129613-cd125dcf-01da-419c-8294-897296caa25e.png)
+![image](https://user-images.githubusercontent.com/42894689/143129881-8dca2773-2116-4cc6-b0b5-6fbe7deeb38f.png)
+![image](https://user-images.githubusercontent.com/42894689/143129928-018635fe-42b6-4972-994a-9da9babafea3.png)
+
+### Time Table Upload Screen (Laptop and Phone)
+
+![image](https://user-images.githubusercontent.com/42894689/143130048-3dcde0fd-4392-4192-bb4f-4815841945f8.png)
+![image](https://user-images.githubusercontent.com/42894689/143130102-d852c412-795c-4754-b5db-f21338a4170a.png)
+
+### Dashboard if there are no classes (Laptop and Phone)
+
+![image](https://user-images.githubusercontent.com/42894689/143130307-f7bfd56e-5dd6-4dc5-8e9e-c86bf6a5762b.png)
+![image](https://user-images.githubusercontent.com/42894689/143130363-642e49f0-bfed-4b94-aed8-0f9d6c7d3fa9.png)
+
+### Covid Verification Page (Laptop and Phone)
+
+![image](https://user-images.githubusercontent.com/42894689/143130473-36742114-1507-429d-864d-19d3efdf94c5.png)
+![image](https://user-images.githubusercontent.com/42894689/143130616-789daf15-e277-4008-bdca-83d48c8fe40e.png)
+
+
+### Error pages (Laptop and phone)
