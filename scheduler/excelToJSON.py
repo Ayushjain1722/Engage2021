@@ -109,5 +109,5 @@ def makeTimeTableDB(path):
 def converter(path):
     tt = makeTimeTableDB(path)
     jsonObj = json.dumps(tt)
-    with open("TimeTableDB.json", "w") as outfile:
+    with open("scheduler/TimeTableDB.json", "w") as outfile:
         outfile.write(jsonObj)

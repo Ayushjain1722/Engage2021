@@ -1,7 +1,7 @@
 import json
 
 def getStatus(beneficiary_id):
-  with open('./CoWinDB.json') as json_file:
+  with open('scheduler/CoWinDB.json') as json_file:
     vaccinationData = json.load(json_file)
   for entry in vaccinationData:
     if entry['beneficiary_id'] == beneficiary_id:

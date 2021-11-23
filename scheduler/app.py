@@ -122,21 +122,21 @@ def scheduledTask():
         msg = Message('Physical Classes Update', sender="engage2021ayush@gmail.com", recipients=['ayushjain1722@gmail.com'])
         msg.body = "Dear student, \nPlease find below the physical classes alotted to you for tomorrow."
         filename = student['email'] + '.csv'
-        with app.open_resource(f"mails/{filename}", "rb") as fp:   
+        with app.open_resource(f"scheduler/mails/{filename}", "rb") as fp:   
             msg.attach(filename="classes.csv", content_type="text/plain", data=fp.read())  
         with app.app_context():
             mail.send(msg)
-        os.remove(f"mails/{filename}")
+        os.remove(f"scheduler/mails/{filename}")
     #Sending the mails to all teachers
     for teacher in teacherList:
         msg = Message('Students list for physical classes', sender="engage2021ayush@gmail.com", recipients=[teacher['email']])
         msg.body = "Respected Professor, \nPlease find below the students list for tomorrow's physical classes."
         filename = teacher['email'] + '.csv'
-        with app.open_resource(f"./mails/{filename}", "rb") as fp:
+        with app.open_resource(f"scheduler/mails/{filename}", "rb") as fp:
             msg.attach(filename="students.csv", content_type="text/plain", data=fp.read())
         with app.app_context():
             mail.send(msg)
-        os.remove(f"./mails/{filename}")
+        os.remove(f"scheduler/mails/{filename}")
     #Delete all entries from the physical and filled databases
     try:
         db.session.query(PhysicalClass).delete()
@@ -241,7 +241,7 @@ def signup():
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():  
-    with open('./TimeTableDB.json') as f:
+    with open('scheduler/TimeTableDB.json') as f:
         data = json.load(f)
     timeTable = []
     #Getting the time table data from the json file for this user's batch number

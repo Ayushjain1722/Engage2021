@@ -65,7 +65,7 @@ def studentSelection(UserList, PhysicalClassList):
     csv_columns = ["class_name", "class_code", "timeSlot"]
     for student in studentList:
         fileName = student['email'] + ".csv"
-        with open('./mails/'+fileName, 'w') as csvfile:
+        with open('scheduler/mails/'+fileName, 'w') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
             writer.writeheader()
             for classDetails in student['classes']:
@@ -74,7 +74,7 @@ def studentSelection(UserList, PhysicalClassList):
     csv_columns = ["rollNo", "groupNo", "class_name", "class_code", "timeSlot"]
     for teacher in teacherList:
         fileName = teacher['email']
-        with open('./mails/'+f'{fileName}.csv', 'w') as csv_file:
+        with open('scheduler/mails/'+f'{fileName}.csv', 'w') as csv_file:
             writer = csv.DictWriter(csv_file, fieldnames=csv_columns)
             writer.writeheader()
             for data in teacher['classes']:
