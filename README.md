@@ -22,7 +22,11 @@ Project Repository for Microsoft Engage 2021.
 
 ![image](https://user-images.githubusercontent.com/42894689/133317498-05875c94-9f66-47c4-b2d3-bc5a09d1361b.png)
 
-4. Heroku (Hosting website)
+4. JavaScript (Frontend)
+
+![image](https://user-images.githubusercontent.com/42894689/143118611-b9263fb6-8879-4ed6-a44c-f123383e292f.png)
+
+5. Heroku (Hosting website)
 
 ![image](https://user-images.githubusercontent.com/42894689/133317602-42753fcb-f12e-45b5-8983-715964902754.png)
 
