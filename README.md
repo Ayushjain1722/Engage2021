@@ -92,3 +92,6 @@ Project Repository for Microsoft Engage 2021.
 
 
 ### Error pages (Laptop and phone)
+
+![image](https://user-images.githubusercontent.com/42894689/143130941-38a7e5ad-32d8-402a-91f5-2fa66cdf8e17.png)
+![image](https://user-images.githubusercontent.com/42894689/143131033-b2fe51f8-cba5-455f-a508-1609393461be.png)
