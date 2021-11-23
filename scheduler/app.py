@@ -16,7 +16,7 @@ import logging
 from datetime import datetime
 from flask_apscheduler import APScheduler
 from scheduler.excelToJSON import converter
-import scheduler.covidCertiVerification
+import scheduler.covidCertiVerification as covidCertiVerification
 from scheduler.selectionAlgo import studentSelection
 from scheduler.credentials import mailingID, mailingPassword
 from scheduler.config import cronTimeHour, cronTimeMinute
@@ -311,9 +311,9 @@ def dashboard():
 def covid_verify():
     if request.method == "POST":
         beneficiary_id = request.form.get('beneficiary_id')
-        priority = scheduler.covidCertiVerification.priority(beneficiary_id)
+        priority = covidCertiVerification.priority(beneficiary_id)
         flash("Vaccination status updated")
-        flash(f"Status: {scheduler.covidCertiVerification.getStatus(beneficiary_id)}")
+        flash(f"Status: {covidCertiVerification.getStatus(beneficiary_id)}")
         user_vaccination = User.query.filter_by(username=current_user.username).first()
         user_vaccination.isVaccinated = priority
         db.session.commit()
