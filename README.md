@@ -10,7 +10,7 @@ Project Repository for Microsoft Engage 2021.
 #### Demo Video Link: 
 
 #### Problem Statement
-
+To build a scheduler responsive and easy tp use web-app to allow students to submit daily preferences for attending classes in-person or remotely. The app then must assign available seats to the students and send a mail to both the teacher and the students. For teachers, the mail must contain the details of all the students going to attend the next day's classes and for the students, the mail contains all the classes for which he/she is selected for physical classes.  
 
 
 #### Sample Time Table File: https://docs.google.com/spreadsheets/d/1iCEjRUBiHYviVf6SVbG1R3Nqo-MmM6YE/edit?usp=sharing&ouid=113169055127155980102&rtpof=true&sd=true
