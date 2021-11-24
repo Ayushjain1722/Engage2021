@@ -65,6 +65,29 @@ To build a scheduler responsive and easy tp use web-app to allow students to sub
   <img src="https://user-images.githubusercontent.com/42894689/143095790-0a1d242a-e87c-4709-ae8a-e9b642ceead7.png">
 </p>
 
+## Directory structure
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/42894689/143299631-5f901076-c267-476d-aa97-6d8c366e0ea6.png">
+</p>
+1. Scheduler folder: This is our main app directory.
+  a. mails directory: All the mails that are to be sent out are temporarily stored here.
+  b. static directory: The styling files are stored here.
+  c. templates directory: All the html webpages are stored here.
+  d. uploads directory: Used to store the uploaded time-table by the admin.
+  e. app.py file: The main app which contains all the routing procedures.
+  f. config.py file: This file contains all the configurational information: threshold for studentSelection algorithm and the mail sending time.
+  g. covidCertification.py: This file fetches the vaccination status from the mock database.
+  h. credentials.py: Contains the email account details for the google account that sends the email.
+  i. excelToJSON.py: This file converts the uploaded time table in JSON format for easy storage.
+  j. selectionAlgo.py: This file returns list of students and teacher with all the details. The list will be used to send the emails.
+  k. bulletinboard.db: Database for bulletin board.
+  l. filled.db: Database to store who all have filled the preference form.
+  m. physicalClasses.db: Database that stores student and class details for students who have marked their wish for physical class.
+  n. user.db: Database for user details.
+  o. CoWin.db: Mock database that will return vaccine status, given the beneficiary-id.
+  p. TimeTable.json: The converted time-table database from the uploaded excel sheet.
+  q. logs.log: Log file containing all the debugging information and website status codes. 
+2. venv directory: Virtual environment for this python project. 
 
 ## Features List
 
@@ -213,6 +236,10 @@ To build a scheduler responsive and easy tp use web-app to allow students to sub
   <img src="https://user-images.githubusercontent.com/42894689/143131609-0cad0a18-ecd4-4aa4-bd68-f51f9568b051.png">
 </p>
 
+### Log file
+![image](https://user-images.githubusercontent.com/42894689/143301583-7c1ea93c-562c-43e1-ad98-cb56aec6b0e0.png)
+
+
 ## Some important points to keep in mind
 
 1. Time Table format<br/>
@@ -221,3 +248,4 @@ To build a scheduler responsive and easy tp use web-app to allow students to sub
   c. Each cell of the time table must have the format: Teacher-email[space]Subject-Name[space]Subject Code
   d. Each sheet contains groups of a particular combination of degree and year. For example, in sample time-table, the first sheet is for undergraduate 3rd year (ug_3).
 2. The filled and physicalclasses databases are cleared after sending out the mails to repective teachers and students.
+3. Admin login credentials: username: admin and password: adminpass
