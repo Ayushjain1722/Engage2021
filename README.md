@@ -88,6 +88,9 @@ To build a scheduler responsive and easy tp use web-app to allow students to sub
   p. TimeTable.json: The converted time-table database from the uploaded excel sheet.
   q. logs.log: Log file containing all the debugging information and website status codes. 
 2. venv directory: Virtual environment for this python project. 
+3. requirements.py: Contains information for all the libraries used in the project.
+4. runtime.txt: Specifies the python version used for the project.
+5. Procfile: mechanism for declaring what commands are run by your application's dynos on the Heroku platform
 
 ## Features List
 
