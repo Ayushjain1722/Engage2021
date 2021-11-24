@@ -217,4 +217,5 @@ To build a scheduler responsive and easy tp use web-app to allow students to sub
   a. The first column must contain the 10 timeslots for each day (8AM-5PM)
   b. All subsequent columns are for the batches (branch and subgroups, for example COE1, BT1, CE1, etc.)
   c. Each cell of the time table must have the format: Teacher-email[space]Subject-Name[space]Subject Code
+  d. Each sheet contains groups of a particular combination of degree and year. For example, in sample time-table, the first sheet is for undergraduate 3rd year (ug_3).
 2. The filled and physicalclasses databases are cleared after sending out the mails to repective teachers and students.
