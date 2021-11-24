@@ -70,28 +70,28 @@ Admin login credentials: username: admin and password: adminpass
 <p align="center">
   <img src="https://user-images.githubusercontent.com/42894689/143299631-5f901076-c267-476d-aa97-6d8c366e0ea6.png">
 </p>
-1. Scheduler folder: This is our main app directory.
-  a. mails directory: All the mails that are to be sent out are temporarily stored here.
-  b. static directory: The styling files are stored here.
-  c. templates directory: All the html webpages are stored here.
-  d. uploads directory: Used to store the uploaded time-table by the admin.
-  e. app.py file: The main app which contains all the routing procedures.
-  f. config.py file: This file contains all the configurational information: threshold for studentSelection algorithm and the mail sending time.
-  g. covidCertification.py: This file fetches the vaccination status from the mock database.
-  h. credentials.py: Contains the email account details for the google account that sends the email.
-  i. excelToJSON.py: This file converts the uploaded time table in JSON format for easy storage.
-  j. selectionAlgo.py: This file returns list of students and teacher with all the details. The list will be used to send the emails.
-  k. bulletinboard.db: Database for bulletin board.
-  l. filled.db: Database to store who all have filled the preference form.
-  m. physicalClasses.db: Database that stores student and class details for students who have marked their wish for physical class.
-  n. user.db: Database for user details.
-  o. CoWin.db: Mock database that will return vaccine status, given the beneficiary-id.
-  p. TimeTable.json: The converted time-table database from the uploaded excel sheet.
-  q. logs.log: Log file containing all the debugging information and website status codes. 
-2. venv directory: Virtual environment for this python project. 
-3. requirements.py: Contains information for all the libraries used in the project.
-4. runtime.txt: Specifies the python version used for the project.
-5. Procfile: mechanism for declaring what commands are run by your application's dynos on the Heroku platform
+1. Scheduler folder: This is our main app directory.<br/>
+2.  mails directory: All the mails that are to be sent out are temporarily stored here.<br/>
+3.  static directory: The styling files are stored here.<br/>
+4.  templates directory: All the html webpages are stored here.<br/>
+5.  uploads directory: Used to store the uploaded time-table by the admin.<br/>
+6.  app.py file: The main app which contains all the routing procedures.<br/>
+7.  config.py file: This file contains all the configurational information: threshold for studentSelection algorithm and the mail sending time.<br/>
+8.  covidCertification.py: This file fetches the vaccination status from the mock database.<br/>
+9.  credentials.py: Contains the email account details for the google account that sends the email.<br/>
+10.  excelToJSON.py: This file converts the uploaded time table in JSON format for easy storage.<br/>
+11.  selectionAlgo.py: This file returns list of students and teacher with all the details. The list will be used to send the emails.<br/>
+12.  bulletinboard.db: Database for bulletin board.<br/>
+13.  filled.db: Database to store who all have filled the preference form.<br/>
+14.  physicalClasses.db: Database that stores student and class details for students who have marked their wish for physical class.<br/>
+15.  user.db: Database for user details.<br/>
+16.  CoWin.db: Mock database that will return vaccine status, given the beneficiary-id.<br/>
+17.  TimeTable.json: The converted time-table database from the uploaded excel sheet.<br/>
+18.  logs.log: Log file containing all the debugging information and website status codes. 
+19. venv directory: Virtual environment for this python project. <br/>
+20. requirements.py: Contains information for all the libraries used in the project.<br/>
+21. runtime.txt: Specifies the python version used for the project.<br/>
+22. Procfile: mechanism for declaring what commands are run by your application's dynos on the Heroku platform<br/>
 
 ## Features List
 
