@@ -43,7 +43,12 @@ Admin login credentials: username: admin and password: adminpass
   <img src="https://user-images.githubusercontent.com/42894689/143118611-b9263fb6-8879-4ed6-a44c-f123383e292f.png">
 </p>
 
-6. Heroku (Hosting website)
+6. Sqlite (Database)
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/42894689/143407381-adc9077d-656e-486d-9975-600d4d7a8d0b.png">
+</p>
+
+7. Heroku (Hosting website)
 <p align="center">
   <img src="https://user-images.githubusercontent.com/42894689/133317602-42753fcb-f12e-45b5-8983-715964902754.png">
 </p>
@@ -254,3 +259,4 @@ Admin login credentials: username: admin and password: adminpass
   d. Each sheet contains groups of a particular combination of degree and year. For example, in sample time-table, the first sheet is for undergraduate 3rd year (ug_3).
 2. The filled and physicalclasses databases are cleared after sending out the mails to repective teachers and students.
 3. Admin login credentials: username: admin and password: adminpass
+4. The data on the website might rollback to initial state because heroku doesn't support sqlite database.
