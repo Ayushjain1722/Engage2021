@@ -261,15 +261,15 @@ def dashboard():
                     elif dayNumber == 3:
                         timeTable = batch['timeTable']['wednesday']
                     elif dayNumber == 4:
-                        timeTable = batch['timeTable']['monday']
+                        timeTable = batch['timeTable']['thursday']
                     elif dayNumber == 5:
                         timeTable = batch['timeTable']['friday']
                     elif dayNumber == 6:
                         timeTable = batch['timeTable']['saturday']
                     else:
-                        timeTable = batch['timeTable']['monday']
+                        # timeTable = batch['timeTable']['monday']
                         # timeTable.append("Enjoy your holiday!")
-                        # timeTable = []
+                        timeTable = []
     if len(timeTable) == 0:
         flash("No classes for tomorrow!")
     #Insert time checking code here
