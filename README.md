@@ -67,8 +67,9 @@ Admin login credentials: username: admin and password: adminpass
 </p>
 
 ## Directory structure
+
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/42894689/143299631-5f901076-c267-476d-aa97-6d8c366e0ea6.png">
+  <img src="https://user-images.githubusercontent.com/42894689/143381955-c849b10f-3025-48c4-9ccc-b209d7854dfc.png">
 </p>
 1. Scheduler folder: This is our main app directory.<br/>
 2.  mails directory: All the mails that are to be sent out are temporarily stored here.<br/>
