@@ -1,4 +1,6 @@
 # Engage2021
+![image](https://user-images.githubusercontent.com/42894689/143294926-d131ca53-2128-4065-9fc4-00c02666fe08.png)
+
 Project Repository for Microsoft Engage 2021. 
 
 #### Name: AYUSH JAIN
@@ -10,8 +12,9 @@ Project Repository for Microsoft Engage 2021.
 #### Demo Video Link: 
 
 #### Problem Statement
+To build a scheduler responsive and easy tp use web-app to allow students to submit daily preferences for attending classes in-person or remotely. The app then must assign available seats to the students and send a mail to both the teacher and the students. For teachers, the mail must contain the details of all the students going to attend the next day's classes and for the students, the mail contains all the classes for which he/she is selected for physical classes.  
 
-
+Admin login credentials: username: admin and password: adminpass
 
 #### Sample Time Table File: https://docs.google.com/spreadsheets/d/1iCEjRUBiHYviVf6SVbG1R3Nqo-MmM6YE/edit?usp=sharing&ouid=113169055127155980102&rtpof=true&sd=true
 ## Tech Stack Used
@@ -40,7 +43,12 @@ Project Repository for Microsoft Engage 2021.
   <img src="https://user-images.githubusercontent.com/42894689/143118611-b9263fb6-8879-4ed6-a44c-f123383e292f.png">
 </p>
 
-6. Heroku (Hosting website)
+6. Sqlite (Database)
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/42894689/143407381-adc9077d-656e-486d-9975-600d4d7a8d0b.png">
+</p>
+
+7. Heroku (Hosting website)
 <p align="center">
   <img src="https://user-images.githubusercontent.com/42894689/133317602-42753fcb-f12e-45b5-8983-715964902754.png">
 </p>
@@ -63,6 +71,33 @@ Project Repository for Microsoft Engage 2021.
   <img src="https://user-images.githubusercontent.com/42894689/143095790-0a1d242a-e87c-4709-ae8a-e9b642ceead7.png">
 </p>
 
+## Directory structure
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/42894689/143381955-c849b10f-3025-48c4-9ccc-b209d7854dfc.png">
+</p>
+1. Scheduler folder: This is our main app directory.<br/>
+2.  mails directory: All the mails that are to be sent out are temporarily stored here.<br/>
+3.  static directory: The styling files are stored here.<br/>
+4.  templates directory: All the html webpages are stored here.<br/>
+5.  uploads directory: Used to store the uploaded time-table by the admin.<br/>
+6.  app.py file: The main app which contains all the routing procedures.<br/>
+7.  config.py file: This file contains all the configurational information: threshold for studentSelection algorithm and the mail sending time.<br/>
+8.  covidCertification.py: This file fetches the vaccination status from the mock database.<br/>
+9.  credentials.py: Contains the email account details for the google account that sends the email.<br/>
+10.  excelToJSON.py: This file converts the uploaded time table in JSON format for easy storage.<br/>
+11.  selectionAlgo.py: This file returns list of students and teacher with all the details. The list will be used to send the emails.<br/>
+12.  bulletinboard.db: Database for bulletin board.<br/>
+13.  filled.db: Database to store who all have filled the preference form.<br/>
+14.  physicalClasses.db: Database that stores student and class details for students who have marked their wish for physical class.<br/>
+15.  user.db: Database for user details.<br/>
+16.  CoWin.db: Mock database that will return vaccine status, given the beneficiary-id.<br/>
+17.  TimeTable.json: The converted time-table database from the uploaded excel sheet.<br/>
+18.  logs.log: Log file containing all the debugging information and website status codes. 
+19. venv directory: Virtual environment for this python project. <br/>
+20. requirements.py: Contains information for all the libraries used in the project.<br/>
+21. runtime.txt: Specifies the python version used for the project.<br/>
+22. Procfile: mechanism for declaring what commands are run by your application's dynos on the Heroku platform<br/>
 
 ## Features List
 
@@ -211,10 +246,17 @@ Project Repository for Microsoft Engage 2021.
   <img src="https://user-images.githubusercontent.com/42894689/143131609-0cad0a18-ecd4-4aa4-bd68-f51f9568b051.png">
 </p>
 
+### Log file
+![image](https://user-images.githubusercontent.com/42894689/143301583-7c1ea93c-562c-43e1-ad98-cb56aec6b0e0.png)
+
+
 ## Some important points to keep in mind
 
 1. Time Table format<br/>
   a. The first column must contain the 10 timeslots for each day (8AM-5PM)
   b. All subsequent columns are for the batches (branch and subgroups, for example COE1, BT1, CE1, etc.)
   c. Each cell of the time table must have the format: Teacher-email[space]Subject-Name[space]Subject Code
+  d. Each sheet contains groups of a particular combination of degree and year. For example, in sample time-table, the first sheet is for undergraduate 3rd year (ug_3).
 2. The filled and physicalclasses databases are cleared after sending out the mails to repective teachers and students.
+3. Admin login credentials: username: admin and password: adminpass
+4. The data on the website might rollback to initial state because heroku doesn't support sqlite database.
